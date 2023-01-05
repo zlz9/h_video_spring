@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zlz9.springbootmanager.mapper.MenuMapper">
+
+    <resultMap id="BaseResultMap" type="com.zlz9.springbootmanager.pojo.Menu">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="CHAR"/>
+            <result property="path" column="path" jdbcType="VARCHAR"/>
+            <result property="component" column="component" jdbcType="VARCHAR"/>
+            <result property="perms" column="perms" jdbcType="VARCHAR"/>
+            <result property="icon" column="icon" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="redirect" column="redirect" jdbcType="VARCHAR"/>
+            <result property="parentid" column="parentId" jdbcType="INTEGER"/>
+            <result property="isShow" column="is_show" jdbcType="CHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,title,name,
+        path,component,perms,
+        icon,del_flag,remark,
+        redirect,parentId,is_show
+    </sql>
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zlz9.springbootmanager.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.zlz9.springbootmanager.pojo.User">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="userName" column="user_name" jdbcType="CHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="nickName" column="nick_name" jdbcType="CHAR"/>
+            <result property="sex" column="sex" jdbcType="BIT"/>
+            <result property="email" column="email" jdbcType="CHAR"/>
+            <result property="createTime" column="create_time" jdbcType="BIGINT"/>
+            <result property="age" column="age" jdbcType="INTEGER"/>
+            <result property="avator" column="avator" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="BIT"/>
+            <result property="phoneNumber" column="phone_number" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="BIT"/>
+            <result property="motto" column="motto" jdbcType="VARCHAR"/>
+            <result property="birthday" column="birthday" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_name,password,
+        nick_name,sex,email,
+        create_time,age,avator,
+        status,phone_number,del_flag,
+        motto,birthday
+    </sql>
+</mapper>

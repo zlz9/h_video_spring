@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zlz9.springbootmanager.mapper.TagMapper">
+
+    <resultMap id="BaseResultMap" type="com.zlz9.springbootmanager.pojo.Tag">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="tagname" column="tagName" jdbcType="CHAR"/>
+            <result property="createTime" column="create_time" jdbcType="BIGINT"/>
+            <result property="updateTime" column="update_time" jdbcType="BIGINT"/>
+            <result property="authorId" column="author_id" jdbcType="BIGINT"/>
+            <result property="isDel" column="is_del" jdbcType="BIT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,tagName,create_time,
+        update_time,author_id,is_del
+    </sql>
+    <select id="selectVideoByTagId" resultType="com.zlz9.springbootmanager.pojo.Video">
+        SELECT
+            hv.id,hv.cover,hv.`name`,hv.create_time,hv.update_time,hv.url,hv.weight,hv.author_id
+        FROM
+            h_video hv
+        WHERE
+            hv.id IN ( SELECT video_id FROM h_video_tag hvt WHERE hvt.tag_id = #{id} )
+    </select>
+</mapper>
