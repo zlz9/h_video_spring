@@ -20,4 +20,28 @@
         name,create_time,update_time,
         author_id,is_del
     </sql>
+    <select id="selectFunnyVideo" resultType="com.zlz9.springbootmanager.pojo.Video">
+        SELECT
+            id,cover,url,`name`,create_time,update_time,author_id,self_introduction,is_top
+        FROM
+            h_video
+        WHERE
+                id IN ( SELECT video_id FROM h_tag ht RIGHT JOIN h_video_tag hvt ON ht.id = hvt.video_id WHERE tag_id = 3 )
+    </select>
+    <select id="selectGameVideo" resultType="com.zlz9.springbootmanager.pojo.Video">
+        SELECT
+            id,cover,url,`name`,create_time,update_time,author_id,self_introduction,is_top
+        FROM
+            h_video
+        WHERE
+                id IN ( SELECT video_id FROM h_tag ht RIGHT JOIN h_video_tag hvt ON ht.id = hvt.video_id WHERE tag_id = 2 )
+    </select>
+    <select id="selectVideoByTag" resultType="com.zlz9.springbootmanager.pojo.Video">
+        SELECT
+            hv.id,hv.cover,hv.`name`,hv.create_time,hv.update_time,hv.url,hv.weight,hv.author_id,hv.is_top,hv.self_introduction
+        FROM
+            h_video hv
+        WHERE
+            hv.id IN ( SELECT video_id FROM h_video_tag hvt WHERE hvt.tag_id = #{id} )
+    </select>
 </mapper>

@@ -62,6 +62,10 @@ public class Video implements Serializable {
      * 是否置顶
      */
     private Boolean isTop;
+    /**
+     * 视频摘要
+     */
+    private String selfIntroduction;
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

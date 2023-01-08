@@ -14,4 +14,6 @@ public interface TagService extends IService<Tag> {
     ResponseResult getTag();
 
     ResponseResult getVideoByTag(Long id);
+
+    Tag getTagById(Integer tagId);
 }

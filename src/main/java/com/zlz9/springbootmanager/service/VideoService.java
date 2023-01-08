@@ -1,5 +1,6 @@
 package com.zlz9.springbootmanager.service;
 
+import com.zlz9.springbootmanager.dto.PageParams;
 import com.zlz9.springbootmanager.pojo.Video;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zlz9.springbootmanager.utils.ResponseResult;
@@ -14,4 +15,18 @@ public interface VideoService extends IService<Video> {
     ResponseResult hotSwiper();
 
     ResponseResult newSwiper();
+
+    ResponseResult recommend();
+
+    ResponseResult lastVideo();
+
+    ResponseResult hotVideo();
+
+    ResponseResult funnyVideo();
+
+    ResponseResult gameVideo();
+
+    ResponseResult videoTop(PageParams pageParams);
+
+    ResponseResult VideoCategory(PageParams pageParams);
 }

@@ -58,6 +58,17 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
         return new ResponseResult<>(200,videoVoList);
     }
 
+    /**
+     * 根据id查询tag
+     * @param tagId
+     * @return
+     */
+    @Override
+    public Tag getTagById(Integer tagId) {
+        Tag tag = tagMapper.selectById(tagId);
+        return tag;
+    }
+
     private List<VideoVo> copyList(List<Video> videoList) {
         List<VideoVo> videoVoList = new ArrayList<>();
         for (Video video : videoList) {

@@ -4,13 +4,13 @@ import lombok.Data;
 
 /**
  * <h4>springboot-manager</h4>
- * <p>视频vo</p>
+ * <p>根据标签查视频的vo</p>
  *
  * @author : zlz
- * @date : 2023-01-05 15:52
+ * @date : 2023-01-07 11:26
  **/
 @Data
-public class VideoVo {
+public class VideoCategoryVo {
     private Long id;
 
     /**
@@ -39,19 +39,20 @@ public class VideoVo {
     private Long updateTime;
 
     /**
-     * 作者信息
+     * 作者id
      */
     private AuthorVo author;
+
     /**
      * 权重
      */
     private Integer weight;
     /**
-     * 摘要
-     */
-    private String selfIntroduction;
-    /**
-     * 是否顶置
+     * 是否置顶
      */
     private Boolean isTop;
+    /**
+     * 视频摘要
+     */
+    private String selfIntroduction;
 }

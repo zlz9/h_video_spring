@@ -45,7 +45,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/login",
             "/api/logout",
             "/api/swiper/*",
-            "/api/tag/*"
+            "/api/tag/*",
+            "/api/video/*",
+            "/api/top/*"
     };
 
     @Override
