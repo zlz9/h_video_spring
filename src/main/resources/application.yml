@@ -27,6 +27,21 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  mail:
+    default-encoding: UTF-8
+    host: smtp.qq.com
+    #    发送邮箱
+    username: 2334094446@qq.com
+    #    授权码
+    password: ktrxggtqfsxreadc
+    #    端口号465或587
+    port: 587
+    #   配置ssl:加密工厂
+    properties:
+      mail:
+        smtp:
+          socketFactoryClass: javax.net.ssl.SSLSocketFactory
+        debug: true
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

@@ -1,14 +1,14 @@
 package com.zlz9.springbootmanager.controller;
 
 import com.zlz9.springbootmanager.dto.LoginParams;
+import com.zlz9.springbootmanager.dto.RegisterParams;
 import com.zlz9.springbootmanager.service.UserService;
 import com.zlz9.springbootmanager.utils.ResponseResult;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * <h4>springboot-manager</h4>
@@ -30,6 +30,10 @@ public class LoginController {
     @GetMapping("logout")
     public ResponseResult logout(){
         return userService.logout();
+    }
+    @PostMapping("register")
+    public ResponseResult register(@RequestBody @Valid RegisterParams registerParams){
+        return userService.register(registerParams);
     }
 
 }

@@ -18,7 +18,7 @@ class SpringbootManagerApplicationTests {
     }
     @Test
     void testBcrypassword(){
-        String encode = passwordEncoder.encode("admin");
+        String encode = passwordEncoder.encode("admin123");
         System.out.println(encode);
     }
 }

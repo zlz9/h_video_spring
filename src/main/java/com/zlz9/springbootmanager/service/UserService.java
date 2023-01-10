@@ -1,6 +1,7 @@
 package com.zlz9.springbootmanager.service;
 
 import com.zlz9.springbootmanager.dto.LoginParams;
+import com.zlz9.springbootmanager.dto.RegisterParams;
 import com.zlz9.springbootmanager.pojo.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zlz9.springbootmanager.utils.ResponseResult;
@@ -18,4 +19,7 @@ public interface UserService extends IService<User> {
     ResponseResult login(LoginParams loginParams);
 
     AuthorVo selectAuthorById(Long authorId);
+
+    ResponseResult register(RegisterParams registerParams);
+
 }
