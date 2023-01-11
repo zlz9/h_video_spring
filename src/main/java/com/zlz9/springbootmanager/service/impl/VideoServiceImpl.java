@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zlz9.springbootmanager.dto.PageParams;
+import com.zlz9.springbootmanager.mapper.UserMapper;
+import com.zlz9.springbootmanager.pojo.LoginUser;
 import com.zlz9.springbootmanager.pojo.Tag;
 import com.zlz9.springbootmanager.pojo.Video;
 import com.zlz9.springbootmanager.service.TagService;
@@ -16,6 +18,8 @@ import com.zlz9.springbootmanager.vo.VideoCategoryVo;
 import com.zlz9.springbootmanager.vo.VideoVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.SpringSecurityCoreVersion;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -37,6 +41,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
     UserService userService;
     @Autowired
     TagService tagService;
+
 
     /**
      * 获取首页的轮播图
@@ -183,6 +188,26 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
         List<Video> videoList = videoMapper.selectVideoByTag(tag.getId());
         List<VideoCategoryVo> videoCategoryVoList = copyVideoByTagList(videoList);
         return new ResponseResult(200, videoCategoryVoList);
+    }
+
+    /**
+     * 根据id删除视频
+     * @return
+     */
+    @Override
+    public ResponseResult delVideoById(Long id) {
+       LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = loginUser.getUser().getId();
+//        先查再删
+        Video video = videoMapper.selectById(id);
+        if (video.getId() == null) {
+            return new ResponseResult<>(404,"资源不存在");
+        }
+        if (userId.equals(video.getAuthorId())) {
+            return new ResponseResult<>(505,"权限不够");
+        }
+        videoMapper.deleteById(id);
+        return new ResponseResult<>(200,"操作成功");
     }
 
     private List<VideoCategoryVo> copyVideoByTagList(List<Video> videoList) {

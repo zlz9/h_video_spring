@@ -29,4 +29,6 @@ public interface VideoService extends IService<Video> {
     ResponseResult videoTop(PageParams pageParams);
 
     ResponseResult VideoCategory(PageParams pageParams);
+
+    ResponseResult delVideoById(Long id);
 }
