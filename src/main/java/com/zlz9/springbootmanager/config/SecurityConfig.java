@@ -49,7 +49,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/video/*",
             "/api/top/*",
             "/api/register",
-            "/api/sendEmail"
+            "/api/sendEmail",
+            "/api/comment/*"
     };
 
     @Override

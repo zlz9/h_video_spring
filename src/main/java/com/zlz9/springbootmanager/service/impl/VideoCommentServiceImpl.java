@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
 * @author 23340
 * @description 针对表【h_video_comment】的数据库操作Service实现
-* @createDate 2023-01-01 14:20:42
+* @createDate 2023-01-14 17:24:56
 */
 @Service
 public class VideoCommentServiceImpl extends ServiceImpl<VideoCommentMapper, VideoComment>

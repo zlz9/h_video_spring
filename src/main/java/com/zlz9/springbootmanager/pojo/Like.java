@@ -9,55 +9,41 @@ import lombok.Data;
 
 /**
  * 
- * @TableName h_video_comment
+ * @TableName h_like
  */
-@TableName(value ="h_video_comment")
+@TableName(value ="h_like")
 @Data
-public class VideoComment implements Serializable {
+public class Like implements Serializable {
     /**
-     * 
+     * id
      */
     @TableId
     private Long id;
 
     /**
-     * 
+     * 点赞信息id
      */
-    private String content;
+    private String infoId;
 
     /**
-     * 
+     * 点赞用户id
+     */
+    private String likeUserId;
+
+    /**
+     * 点赞状态，0取消，1点赞
+     */
+    private Integer status;
+
+    /**
+     * 创建时间
      */
     private Long createTime;
 
     /**
-     * 
+     * 更新时间
      */
     private Long updateTime;
-
-    /**
-     * 
-     */
-    private Long videoId;
-
-    /**
-     * 
-     */
-    private Long authorId;
-
-    /**
-     * 
-     */
-    private Long toUid;
-
-    /**
-     * 
-     */
-    private Long parentId;
-    /**
-     * 评论
-     */
-   private Integer likeCount;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
