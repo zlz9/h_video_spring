@@ -210,6 +210,15 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
         return new ResponseResult<>(200,"操作成功");
     }
 
+    @Override
+    public ResponseResult getVideoListByUserId(Long id) {
+        LambdaQueryWrapper<Video> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Video::getAuthorId, id);
+        List<Video> videoList = videoMapper.selectList(queryWrapper);
+        List<VideoVo> videoVoList = copyVideoList(videoList);
+        return new ResponseResult(200, videoVoList);
+    }
+
     private List<VideoCategoryVo> copyVideoByTagList(List<Video> videoList) {
         List<VideoCategoryVo> videoByTagVos = new ArrayList<>();
         for (Video video : videoList) {

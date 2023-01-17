@@ -22,4 +22,5 @@ public interface UserService extends IService<User> {
 
     ResponseResult register(RegisterParams registerParams);
 
+    ResponseResult getAuthorInfoById(Long id);
 }

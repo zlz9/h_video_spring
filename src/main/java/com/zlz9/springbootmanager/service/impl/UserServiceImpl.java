@@ -7,16 +7,21 @@ import com.zlz9.springbootmanager.dto.RegisterParams;
 import com.zlz9.springbootmanager.lang.Const;
 import com.zlz9.springbootmanager.pojo.LoginUser;
 import com.zlz9.springbootmanager.pojo.User;
+import com.zlz9.springbootmanager.pojo.Video;
 import com.zlz9.springbootmanager.service.UserService;
 import com.zlz9.springbootmanager.mapper.UserMapper;
+import com.zlz9.springbootmanager.service.VideoService;
 import com.zlz9.springbootmanager.utils.JwtUtil;
 import com.zlz9.springbootmanager.utils.RedisCache;
 import com.zlz9.springbootmanager.utils.ResponseResult;
 import com.zlz9.springbootmanager.utils.UserNameUtils;
+import com.zlz9.springbootmanager.vo.AuthorVideoVo;
 import com.zlz9.springbootmanager.vo.AuthorVo;
+import com.zlz9.springbootmanager.vo.VideoVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,7 +31,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -114,6 +121,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
         userMapper.insert(user);
         return new ResponseResult(200, "注册成功！");
+    }
+
+    /**
+     * 根据id查找用户id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult getAuthorInfoById(Long id) {
+        User user = userMapper.selectById(id);
+        AuthorVo authorVo = new AuthorVo();
+        BeanUtils.copyProperties(user, authorVo);
+        return new ResponseResult<>(200,authorVo);
+    }
+
+    private VideoVo copy(Video video) {
+        VideoVo videoVo = new VideoVo();
+        BeanUtils.copyProperties(video, videoVo);
+        return videoVo;
     }
 
     @Override

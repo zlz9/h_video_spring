@@ -1,4 +1,4 @@
-package com.zlz9.websocketspringbootdemo.config;
+package com.zlz9.springbootmanager.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -5,6 +5,8 @@ import com.zlz9.springbootmanager.pojo.Video;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zlz9.springbootmanager.utils.ResponseResult;
 
+import java.util.List;
+
 /**
 * @author 23340
 * @description 针对表【h_video】的数据库操作Service
@@ -31,4 +33,6 @@ public interface VideoService extends IService<Video> {
     ResponseResult VideoCategory(PageParams pageParams);
 
     ResponseResult delVideoById(Long id);
+
+    ResponseResult getVideoListByUserId(Long id);
 }

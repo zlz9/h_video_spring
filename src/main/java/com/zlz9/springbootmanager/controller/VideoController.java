@@ -55,4 +55,8 @@ public class VideoController {
     public ResponseResult VideoCategory(PageParams pageParams){
         return videoService.VideoCategory(pageParams);
     }
+    @GetMapping("video/user/{id}")
+    public ResponseResult getVideoListByUserId(@PathVariable Long id){
+        return videoService.getVideoListByUserId(id);
+    }
 }
