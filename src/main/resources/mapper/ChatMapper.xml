@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zlz9.springbootmanager.mapper.ChatMapper">
+
+    <resultMap id="BaseResultMap" type="com.zlz9.springbootmanager.pojo.Chat">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="message" column="message" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="BIT"/>
+            <result property="createTime" column="create_time" jdbcType="BIGINT"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="toUserId" column="to_user_id" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,message,status,
+        create_time,user_id,to_user_id
+    </sql>
+    <select id="selectChatListByUserId" resultType="com.zlz9.springbootmanager.pojo.Chat">
+        SELECT
+            id,
+            message,
+            `status`,
+            create_time,
+            user_id,
+            to_user_id
+        FROM
+            h_chat
+        WHERE
+                user_id = #{id}
+                AND to_user_id = #{toUserId}
+           OR ( to_user_id = #{id} AND user_id = #{toUserId} )
+        ORDER BY
+            create_time ASC
+    </select>
+    <select id="selectLastMsg" resultType="java.lang.String">
+        SELECT message from h_chat WHERE user_id = #{friendId} AND to_user_id= #{userId} ORDER BY  create_time DESC LIMIT 1
+    </select>
+    <select id="selectMsgCreateTimeById" resultType="java.lang.Long">
+        SELECT create_time from h_chat WHERE user_id = #{friendId} ORDER BY create_time DESC LIMIT 1
+    </select>
+</mapper>

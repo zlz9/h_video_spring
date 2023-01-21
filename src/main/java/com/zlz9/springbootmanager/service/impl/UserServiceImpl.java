@@ -137,6 +137,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return new ResponseResult<>(200,authorVo);
     }
 
+    /**
+     * 获取当前登录信息
+     * @return
+     */
+    @Override
+    public ResponseResult getCurrentUser() {
+       LoginUser  loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userMapper.selectById(loginUser.getUser().getId());
+        AuthorVo authorVo = new AuthorVo();
+        BeanUtils.copyProperties(user, authorVo);
+        return new ResponseResult<>(200,authorVo);
+    }
+
     private VideoVo copy(Video video) {
         VideoVo videoVo = new VideoVo();
         BeanUtils.copyProperties(video, videoVo);

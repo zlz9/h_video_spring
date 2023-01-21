@@ -6,12 +6,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zlz9.springbootmanager.dto.UserLikeCountDTO;
 import com.zlz9.springbootmanager.dto.UserLikesDTO;
 import com.zlz9.springbootmanager.lang.CONSTANT;
+import com.zlz9.springbootmanager.mapper.ChatMapper;
 import com.zlz9.springbootmanager.mapper.LikeMapper;
 import com.zlz9.springbootmanager.mapper.VideoCommentMapper;
+import com.zlz9.springbootmanager.pojo.Chat;
 import com.zlz9.springbootmanager.pojo.Like;
 import com.zlz9.springbootmanager.pojo.VideoComment;
 import com.zlz9.springbootmanager.service.DBService;
 import com.zlz9.springbootmanager.service.RedisService;
+import com.zlz9.springbootmanager.utils.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.n3r.idworker.Sid;
@@ -42,6 +45,8 @@ public class DBServiceImpl implements DBService {
     private VideoCommentMapper videoCommentMapper;
     @Autowired
     private Sid sid;
+    @Autowired
+    private ChatMapper chatMapper;
 //UserLikes 转 Like
 @Override
 public Boolean save(Like userLike) {
@@ -171,6 +176,20 @@ public Boolean save(Like userLike) {
                 }
             }
             log.info("内容id不存在，无法将缓存数据持久化！");
+        }
+    }
+
+    @Override
+    public void transChatFromRedis2DB() {
+     List<Chat> chatList= redisService.getChatFromRedis2D();
+        if (CollectionUtils.isEmpty(chatList)) {
+            log.info("聊天列表为空");
+            return;
+        }
+        for (Chat chat : chatList) {
+            chatMapper.insert(chat);
+            log.info("新增聊天数:{}",chatList.size());
+
         }
     }
 

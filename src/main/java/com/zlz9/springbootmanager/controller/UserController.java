@@ -24,5 +24,9 @@ public class UserController {
     public ResponseResult getAuthorInfoById(@PathVariable Long id){
         return userService.getAuthorInfoById(id);
     }
+    @GetMapping("userinfo/current")
+    public ResponseResult getCurrentUser(){
+        return userService.getCurrentUser();
+    }
 
 }

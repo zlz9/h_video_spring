@@ -3,8 +3,10 @@ package com.zlz9.springbootmanager.service.impl;
 import com.zlz9.springbootmanager.dto.UserLikeCountDTO;
 import com.zlz9.springbootmanager.dto.UserLikesDTO;
 import com.zlz9.springbootmanager.lang.CONSTANT;
+import com.zlz9.springbootmanager.pojo.Chat;
 import com.zlz9.springbootmanager.service.RedisService;
 import com.zlz9.springbootmanager.utils.LocalDateTimeConvertUtil;
+import com.zlz9.springbootmanager.utils.RedisCache;
 import com.zlz9.springbootmanager.utils.RedisKeyUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,8 @@ public class RedisServiceImpl implements RedisService {
 //    @Autowired 不行
     @Resource
     private HashOperations<String, String, Object> redisHash;// Redis Hash
-
+    @Autowired
+    RedisCache redisCache;
     @Override
     public Integer getLikeStatus(String infoId, String likeUserId) {
         if (redisHash.hasKey(RedisKeyUtils.MAP_KEY_USER_LIKED, RedisKeyUtils.getLikedKey(infoId, likeUserId))){
@@ -117,5 +120,12 @@ public class RedisServiceImpl implements RedisService {
             redisHash.delete(RedisKeyUtils.MAP_KEY_USER_LIKED_COUNT, key);
         }
         return list;
+    }
+
+    @Override
+    public List<Chat> getChatFromRedis2D() {
+        List<Chat> chat_list = redisCache.getCacheList("CHAT_LIST");
+        redisCache.deleteObject("CHAT_LIST");
+        return chat_list;
     }
 }

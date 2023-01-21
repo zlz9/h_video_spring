@@ -37,10 +37,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        /**
-         *TODO  将请求头的token和redis的token做比较
-         *  如果有相同放行，不同抛出错误
-         */
         //解析token
         String userid;
         try {

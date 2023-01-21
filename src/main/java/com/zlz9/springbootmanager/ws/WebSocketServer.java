@@ -1,6 +1,11 @@
 package com.zlz9.springbootmanager.ws;
 
+import com.zlz9.springbootmanager.pojo.LoginUser;
+import com.zlz9.springbootmanager.utils.JwtUtil;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -21,17 +26,17 @@ import java.util.concurrent.CopyOnWriteArraySet;
  **/
 @Slf4j
 @Component
-@ServerEndpoint("/websocket/{userId}")
+@ServerEndpoint("/websocket/{code}")
+//@ServerEndpoint("/websocket")
 public class WebSocketServer {
+
     //    在线人数
     private static int onlineCount;
     //    当前会话
     private Session session;
     //    用户唯一标识
-    private String userId;
-
+    private String id;
     private static CopyOnWriteArraySet<WebSocketServer> webSocketSet = new CopyOnWriteArraySet<>();
-
     /**
      * concurrent包的线程安全set，用来存放每个客户端对应的MyWebSocket对象
      */
@@ -51,19 +56,24 @@ public class WebSocketServer {
      * @throws
      **/
     @OnOpen
-    public void onOpen(Session session, @PathParam("userId") String userId) {
+    public void onOpen(Session session, @PathParam("code") String code) throws Exception {
+        Claims claims = JwtUtil.parseJWT(code);
+//        解析出id
+        String id = claims.getSubject();
         this.session = session;
-        this.userId = userId;
+        this.id = id;
+        //设置超时，同httpSession
+        session.setMaxIdleTimeout(3600000);
         webSocketSet.add(this);
         SESSIONS.add(session);
-        if (webSocketMap.containsKey(userId)) {
-            webSocketMap.remove(userId);
-            webSocketMap.put(userId,this);
+        if (webSocketMap.containsKey(id)) {
+            webSocketMap.remove(id);
+            webSocketMap.put(id,this);
         } else {
-            webSocketMap.put(userId,this);
+            webSocketMap.put(id,this);
             addOnlineCount();
         }
-        log.info("[连接ID:{}] 建立连接, 当前连接数:{}", this.userId, getOnlineCount());
+        log.info("[连接ID:{}] 建立连接, 当前连接数:{}", this.id, getOnlineCount());
     }
 
     /**
@@ -77,11 +87,11 @@ public class WebSocketServer {
     @OnClose
     public void onClose() {
         webSocketSet.remove(this);
-        if (webSocketMap.containsKey(userId)) {
-            webSocketMap.remove(userId);
+        if (webSocketMap.containsKey(id)) {
+            webSocketMap.remove(id);
             subOnlineCount();
         }
-        log.info("[连接ID:{}] 断开连接, 当前连接数:{}", userId, getOnlineCount());
+        log.info("[连接ID:{}] 断开连接, 当前连接数:{}", id, getOnlineCount());
     }
 
     /**
@@ -94,7 +104,7 @@ public class WebSocketServer {
      **/
     @OnError
     public void onError(Session session, Throwable error) {
-        log.info("[连接ID:{}] 错误原因:{}", this.userId, error.getMessage());
+        log.info("[连接ID:{}] 错误原因:{}", this.id, error.getMessage());
         error.printStackTrace();
     }
 
@@ -108,9 +118,8 @@ public class WebSocketServer {
      **/
     @OnMessage
     public void onMessage(String message) {
-        log.info("[连接ID:{}] 收到消息:{}", this.userId, message);
+        log.info("[连接ID:{}] 收到消息:{}", this.id, message);
     }
-
     /**
      * @methodName: sendMessage
      * @description: 发送消息
@@ -127,7 +136,7 @@ public class WebSocketServer {
                 webSocketServer.session.getBasicRemote().sendText(message);
             } catch (Exception e) {
                 e.printStackTrace();
-                log.error("[连接ID:{}] 发送消息失败, 消息:{}", this.userId, message, e);
+                log.error("[连接ID:{}] 发送消息失败, 消息:{}", this.id, message, e);
             }
         }
     }

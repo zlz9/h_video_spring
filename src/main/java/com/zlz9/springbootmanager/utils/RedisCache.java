@@ -122,6 +122,10 @@ public class RedisCache
     {
         return redisTemplate.opsForList().range(key, 0, -1);
     }
+    /**
+     * 删除redis中的list对象
+     */
+
 
     /**
      * 缓存Set
@@ -278,4 +282,5 @@ public class RedisCache
     {
         return redisTemplate.keys(pattern);
     }
+
 }

@@ -50,4 +50,8 @@ public interface DBService {
      * 将Redis中的点赞数量数据存入数据库
      */
     void transLikedCountFromRedis2DB();
+/**
+ * 将redis的评论存入数据库中
+ */
+    void transChatFromRedis2DB();
 }
