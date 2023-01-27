@@ -17,7 +17,15 @@
         id,message,status,
         create_time,user_id,to_user_id
     </sql>
-    <select id="selectChatListByUserId" resultType="com.zlz9.springbootmanager.pojo.Chat">
+
+    <select id="selectLastMsg" resultType="java.lang.String">
+        SELECT message from h_chat WHERE user_id = #{friendId} AND to_user_id= #{userId} ORDER BY  create_time DESC LIMIT 1
+    </select>
+    <select id="selectMsgCreateTimeById" resultType="java.lang.Long">
+        SELECT create_time from h_chat WHERE user_id = #{friendId} ORDER BY create_time DESC LIMIT 1
+    </select>
+    <select id="selectChatListById" resultType="com.zlz9.springbootmanager.pojo.Chat">
+        -- 根据id查询两人的聊天记录
         SELECT
             id,
             message,
@@ -28,16 +36,11 @@
         FROM
             h_chat
         WHERE
-                user_id = #{id}
+                    user_id = #{userId}
                 AND to_user_id = #{toUserId}
-           OR ( to_user_id = #{id} AND user_id = #{toUserId} )
+           OR ( to_user_id = #{userId} AND user_id = #{toUserId} )
         ORDER BY
-            create_time ASC
-    </select>
-    <select id="selectLastMsg" resultType="java.lang.String">
-        SELECT message from h_chat WHERE user_id = #{friendId} AND to_user_id= #{userId} ORDER BY  create_time DESC LIMIT 1
-    </select>
-    <select id="selectMsgCreateTimeById" resultType="java.lang.Long">
-        SELECT create_time from h_chat WHERE user_id = #{friendId} ORDER BY create_time DESC LIMIT 1
+            create_time DESC
+            LIMIT #{page},#{pageSize}
     </select>
 </mapper>

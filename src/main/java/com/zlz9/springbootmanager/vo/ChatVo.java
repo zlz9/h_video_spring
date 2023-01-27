@@ -2,6 +2,8 @@ package com.zlz9.springbootmanager.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * <h4>springboot-manager</h4>
  * <p>聊天vo</p>
@@ -10,7 +12,7 @@ import lombok.Data;
  * @date : 2023-01-18 19:58
  **/
 @Data
-public class ChatVo {
+public class ChatVo{
     private  Long id;
 
     /**

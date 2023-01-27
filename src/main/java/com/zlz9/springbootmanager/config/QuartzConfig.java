@@ -41,8 +41,8 @@ public class QuartzConfig {
         trigger.setStartTime(new Date());
         // 每5秒执行一次
 //        trigger.setRepeatInterval(5000);
-//        trigger.setCronExpression("0 0 3 1 * ?");
-        trigger.setCronExpression("0 0/1 * * * ?");
+        trigger.setCronExpression("0 0 3 1 * ?");
+//        trigger.setCronExpression("0 0/1 * * * ?");
 //        trigger.setCronExpression("* 1 * * * ? *");
         return trigger;
     }

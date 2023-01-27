@@ -13,9 +13,11 @@ public interface ChatService extends IService<Chat> {
 
     ResponseResult sendMessage(Long userId, String msg);
 
-    ResponseResult getChatListById(Long toUserId);
-
     String selectLastMgsById(Long friendId,Long userId);
 
     Long selectMsgCreateTimeById(Long friendId);
+
+    ResponseResult getNewChatListById(Long toUserId);
+
+    ResponseResult getMoreChatListById(Long toUserId ,Integer page,Integer pageSize);
 }

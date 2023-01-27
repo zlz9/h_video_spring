@@ -15,11 +15,11 @@ import java.util.List;
 @Mapper
 public interface ChatMapper extends BaseMapper<Chat> {
 
-    List<Chat> selectChatListByUserId(Long id, Long toUserId);
-
     String selectLastMsg(Long friendId,Long userId);
 
     Long selectMsgCreateTimeById(Long friendId);
+
+    List<Chat> selectChatListById(Long toUserId,Long userId ,Integer page,Integer pageSize);
 }
 
 

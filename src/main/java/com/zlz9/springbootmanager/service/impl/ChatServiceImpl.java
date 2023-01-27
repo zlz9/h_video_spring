@@ -1,6 +1,7 @@
 package com.zlz9.springbootmanager.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zlz9.springbootmanager.mapper.ChatMapper;
 import com.zlz9.springbootmanager.pojo.Chat;
@@ -19,6 +20,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,19 +94,7 @@ public class ChatServiceImpl extends ServiceImpl<ChatMapper, Chat>
         return new ResponseResult<>(200, "发送成功");
     }
 
-    /**
-     * 获取用户聊天列表
-     *
-     * @param toUserId
-     * @return
-     */
-    @Override
-    public ResponseResult getChatListById(Long toUserId) {
-        LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<Chat> chatList = chatMapper.selectChatListByUserId(loginUser.getUser().getId(), toUserId);
-        List<ChatVo> chatVoList = copyChatList(chatList);
-        return new ResponseResult<>(200, chatVoList);
-    }
+
 
     /**
      * 根据id获取
@@ -119,6 +109,47 @@ public class ChatServiceImpl extends ServiceImpl<ChatMapper, Chat>
     @Override
     public Long selectMsgCreateTimeById(Long friendId) {
        return chatMapper.selectMsgCreateTimeById(friendId);
+    }
+
+    /**
+     * 查询最新的消息
+     * @param toUserId
+     * @return
+     */
+    @Override
+    public ResponseResult getNewChatListById(Long toUserId) {
+        LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long id = loginUser.getUser().getId();
+        List<Chat> chatList = redisCache.getCacheList("CHAT_LIST");
+        List<ChatVo> chatVoList = new ArrayList<>();
+//        读取聊天列表后进行过滤
+        for (Chat chat : chatList) {
+            if(chat.getToUserId().equals(toUserId) && chat.getUserId().equals(id) ||chat.getToUserId().equals(id) && chat.getUserId().equals(toUserId)){
+//                添加到聊天列表
+                chatVoList.add(copy(chat));
+            }
+        }
+        if (CollectionUtils.isEmpty(chatVoList)) {
+            return new ResponseResult<>(400,"未找到最新聊天记录");
+        }
+        return new ResponseResult(200, chatVoList);
+    }
+
+    /**
+     * 获取更多的聊天信息
+     * 分页查询
+     * @param toUserId
+     * @return
+     */
+    @Override
+    public ResponseResult getMoreChatListById(Long toUserId ,Integer page,Integer pageSize) {
+        LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = loginUser.getUser().getId();
+        page = (page-1)*pageSize;
+        List<Chat> chatList= chatMapper.selectChatListById(userId,toUserId,page,pageSize);
+        List<ChatVo> chatVoList = copyChatList(chatList);
+
+        return new ResponseResult<>(200,chatVoList);
     }
 
     private List<ChatVo> copyChatList(List<Chat> chatList) {

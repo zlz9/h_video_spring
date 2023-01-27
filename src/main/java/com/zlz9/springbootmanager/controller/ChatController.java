@@ -22,8 +22,12 @@ public class ChatController {
     public ResponseResult sendMessage(@PathVariable Long userId ,@PathVariable String msg ){
         return chatService.sendMessage(userId,msg);
     }
-    @GetMapping("chat/{toUserId}")
-    public ResponseResult getChatListById(@PathVariable Long toUserId){
-      return chatService.getChatListById(toUserId);
+    @GetMapping("chat/new/{toUserId}")
+    public ResponseResult getNewChatListById(@PathVariable Long toUserId){
+      return chatService.getNewChatListById(toUserId);
     };
+    @GetMapping("chat/more/{toUserId}/{page}/{pageSize}")
+    public ResponseResult getMoreChatListById(@PathVariable Long toUserId,@PathVariable Integer page,@PathVariable Integer pageSize){
+        return chatService.getMoreChatListById(toUserId,page,pageSize);
+    }
 }
