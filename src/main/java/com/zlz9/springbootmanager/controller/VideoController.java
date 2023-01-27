@@ -1,6 +1,7 @@
 package com.zlz9.springbootmanager.controller;
 
 import com.zlz9.springbootmanager.dto.PageParams;
+import com.zlz9.springbootmanager.dto.VideoHistoryParams;
 import com.zlz9.springbootmanager.service.VideoService;
 import com.zlz9.springbootmanager.utils.ResponseResult;
 import io.swagger.annotations.Api;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.security.PublicKey;
+import java.util.List;
 
 /**
  * <h4>springboot-manager</h4>
@@ -58,5 +61,9 @@ public class VideoController {
     @GetMapping("video/user/{id}")
     public ResponseResult getVideoListByUserId(@PathVariable Long id){
         return videoService.getVideoListByUserId(id);
+    }
+    @GetMapping("video/history/ids={ids}")
+    public ResponseResult getHistoryVideoList(@PathVariable Long[] ids){
+        return videoService.getHistoryVideoList(ids);
     }
 }

@@ -1,30 +1,30 @@
 package com.zlz9.springbootmanager.service.impl;
 
+import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zlz9.springbootmanager.dto.PageParams;
-import com.zlz9.springbootmanager.mapper.UserMapper;
+import com.zlz9.springbootmanager.dto.VideoHistoryParams;
+import com.zlz9.springbootmanager.mapper.VideoMapper;
 import com.zlz9.springbootmanager.pojo.LoginUser;
 import com.zlz9.springbootmanager.pojo.Tag;
 import com.zlz9.springbootmanager.pojo.Video;
 import com.zlz9.springbootmanager.service.TagService;
 import com.zlz9.springbootmanager.service.UserService;
 import com.zlz9.springbootmanager.service.VideoService;
-import com.zlz9.springbootmanager.mapper.VideoMapper;
 import com.zlz9.springbootmanager.utils.ResponseResult;
 import com.zlz9.springbootmanager.vo.SwiperVo;
 import com.zlz9.springbootmanager.vo.VideoCategoryVo;
 import com.zlz9.springbootmanager.vo.VideoVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -215,6 +215,21 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
         LambdaQueryWrapper<Video> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Video::getAuthorId, id);
         List<Video> videoList = videoMapper.selectList(queryWrapper);
+        List<VideoVo> videoVoList = copyVideoList(videoList);
+        return new ResponseResult(200, videoVoList);
+    }
+
+    /**
+     * 根据id查询视频列表
+     * @param
+     * @return
+     */
+    @Override
+    public ResponseResult getHistoryVideoList(Long[] ids) {
+        if (ArrayUtil.isEmpty(ids)) {
+           return new ResponseResult<>(400,"未找到历史记录");
+        }
+        List<Video> videoList = videoMapper.selectBatchIds(Arrays.asList(ids));
         List<VideoVo> videoVoList = copyVideoList(videoList);
         return new ResponseResult(200, videoVoList);
     }

@@ -1,7 +1,9 @@
 package com.zlz9.springbootmanager.service;
 
+import com.zlz9.springbootmanager.dto.PageById;
 import com.zlz9.springbootmanager.pojo.VideoComment;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zlz9.springbootmanager.utils.ResponseResult;
 
 /**
 * @author 23340
@@ -10,4 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface VideoCommentService extends IService<VideoComment> {
 
+    ResponseResult getCommentById(PageById pageById);
 }

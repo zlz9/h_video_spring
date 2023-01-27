@@ -58,7 +58,10 @@ public class VideoComment implements Serializable {
      * 评论
      */
    private Integer likeCount;
-
+    /**
+     * 层级
+     */
+   private Integer level;
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }
