@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zlz9.springbootmanager.dto.PageById;
+import com.zlz9.springbootmanager.pojo.Video;
 import com.zlz9.springbootmanager.pojo.VideoComment;
 import com.zlz9.springbootmanager.service.UserService;
 import com.zlz9.springbootmanager.service.VideoCommentService;
@@ -19,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.xml.stream.events.Comment;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -50,6 +52,17 @@ public class VideoCommentServiceImpl extends ServiceImpl<VideoCommentMapper, Vid
         List<VideoComment> records = commentPage.getRecords();
         List<CommentVo> commentVoList = copyList(records);
         return new ResponseResult(200, commentVoList);
+    }
+
+    /**
+     * 根据评论id获取文章点赞总数
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult getCommentCountById(Long id) {
+        VideoComment videoComment = videoCommentMapper.selectById(id);
+        return new ResponseResult(200, videoComment.getLikeCount());
     }
 
     private List<CommentVo> copyList(List<VideoComment> records) {

@@ -13,4 +13,6 @@ import com.zlz9.springbootmanager.utils.ResponseResult;
 public interface VideoCommentService extends IService<VideoComment> {
 
     ResponseResult getCommentById(PageById pageById);
+
+    ResponseResult getCommentCountById(Long id);
 }

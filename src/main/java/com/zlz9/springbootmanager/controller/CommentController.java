@@ -27,4 +27,8 @@ public class CommentController {
     public ResponseResult getCommentById(PageById pageById){
         return videoCommentService.getCommentById(pageById);
     }
+    @GetMapping("/comment/count/{id}")
+    public ResponseResult getCommentCountById(@PathVariable Long id){
+        return videoCommentService.getCommentCountById(id);
+    }
 }
