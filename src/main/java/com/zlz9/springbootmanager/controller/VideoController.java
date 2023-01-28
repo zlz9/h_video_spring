@@ -66,4 +66,5 @@ public class VideoController {
     public ResponseResult getHistoryVideoList(@PathVariable Long[] ids){
         return videoService.getHistoryVideoList(ids);
     }
+
 }

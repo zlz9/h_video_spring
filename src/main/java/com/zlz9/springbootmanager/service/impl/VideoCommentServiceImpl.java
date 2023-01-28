@@ -62,6 +62,9 @@ public class VideoCommentServiceImpl extends ServiceImpl<VideoCommentMapper, Vid
     @Override
     public ResponseResult getCommentCountById(Long id) {
         VideoComment videoComment = videoCommentMapper.selectById(id);
+        if (videoComment == null) {
+            return new ResponseResult(404, "未找到");
+        }
         return new ResponseResult(200, videoComment.getLikeCount());
     }
 

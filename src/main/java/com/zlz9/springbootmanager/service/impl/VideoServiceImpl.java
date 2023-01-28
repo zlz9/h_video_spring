@@ -26,6 +26,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author 23340
@@ -203,7 +204,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
         if (video.getId() == null) {
             return new ResponseResult<>(404,"资源不存在");
         }
-        if (userId.equals(video.getAuthorId())) {
+        if (!Objects.equals(userId, video.getAuthorId())) {
             return new ResponseResult<>(505,"权限不够");
         }
         videoMapper.deleteById(id);
