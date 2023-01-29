@@ -9,4 +9,5 @@ package com.zlz9.springbootmanager.lang;
  **/
 public class Const {
     public static final String UNKNOWN = "未知";
+    public static final String SEARCHKEY = "SEARCHTOP";
 }

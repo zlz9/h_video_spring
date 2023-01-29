@@ -1,6 +1,7 @@
 package com.zlz9.springbootmanager.config;
 
 import com.zlz9.springbootmanager.quartz.TaskJobOne;
+import com.zlz9.springbootmanager.quartz.TaskJobSearch;
 import com.zlz9.springbootmanager.utils.CronUtil;
 import org.quartz.*;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +36,36 @@ public class QuartzConfig {
     public CronTriggerFactoryBean firstTrigger(JobDetail firstJobDetail) {
         CronTriggerFactoryBean trigger = new CronTriggerFactoryBean();
         trigger.setJobDetail(firstJobDetail);
+        // 设置任务启动延迟
+        trigger.setStartDelay(0);
+        // 设置定时任务启动时间
+        trigger.setStartTime(new Date());
+        // 每5秒执行一次
+//        trigger.setRepeatInterval(5000);
+        trigger.setCronExpression("0 0 3 1 * ?");
+//        trigger.setCronExpression("0 0/1 * * * ?");
+//        trigger.setCronExpression("* 1 * * * ? *");
+        return trigger;
+    }
+
+
+    // 配置定时任务删除搜素榜单的任务实例
+    @Bean(name = "searchTopJobDetail")
+    public MethodInvokingJobDetailFactoryBean delSearch(TaskJobSearch taskJobSearch) {
+        MethodInvokingJobDetailFactoryBean jobDetail = new MethodInvokingJobDetailFactoryBean();
+        // 是否并发执行
+        jobDetail.setConcurrent(false);
+        // 为需要执行的实体类对应的对象
+        jobDetail.setTargetObject(taskJobSearch);
+        // 需要执行的方法
+        jobDetail.setTargetMethod("delSearch");
+        return jobDetail;
+    }
+    // 配置触发器1
+    @Bean(name = "searchTopJobDetail")
+    public CronTriggerFactoryBean delTrigger(JobDetail searchTopJobDetail) {
+        CronTriggerFactoryBean trigger = new CronTriggerFactoryBean();
+        trigger.setJobDetail(searchTopJobDetail);
         // 设置任务启动延迟
         trigger.setStartDelay(0);
         // 设置定时任务启动时间

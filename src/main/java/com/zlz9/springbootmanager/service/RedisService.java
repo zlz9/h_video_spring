@@ -3,6 +3,7 @@ package com.zlz9.springbootmanager.service;
 
 import com.zlz9.springbootmanager.dto.UserLikeCountDTO;
 import com.zlz9.springbootmanager.dto.UserLikesDTO;
+import com.zlz9.springbootmanager.lang.Const;
 import com.zlz9.springbootmanager.pojo.Chat;
 
 import java.util.List;
@@ -57,4 +58,11 @@ public interface RedisService {
     List<UserLikeCountDTO> getLikedCountFromRedis();
 
     List<Chat> getChatFromRedis2D();
+
+    void setSearchTop(String title);
+
+    List<String> getSearchTop();
+
+//    删除热搜
+    void delSearch();
 }

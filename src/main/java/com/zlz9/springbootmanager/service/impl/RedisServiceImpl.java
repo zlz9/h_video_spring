@@ -3,6 +3,7 @@ package com.zlz9.springbootmanager.service.impl;
 import com.zlz9.springbootmanager.dto.UserLikeCountDTO;
 import com.zlz9.springbootmanager.dto.UserLikesDTO;
 import com.zlz9.springbootmanager.lang.CONSTANT;
+import com.zlz9.springbootmanager.lang.Const;
 import com.zlz9.springbootmanager.pojo.Chat;
 import com.zlz9.springbootmanager.service.RedisService;
 import com.zlz9.springbootmanager.utils.LocalDateTimeConvertUtil;
@@ -128,4 +129,31 @@ public class RedisServiceImpl implements RedisService {
         redisCache.deleteObject("CHAT_LIST");
         return chat_list;
     }
+
+    @Override
+    public void setSearchTop(String title) {
+        List<String> searchList = new ArrayList<>();
+        searchList.add(title);
+        redisCache.setCacheList(Const.SEARCHKEY, searchList);
+        searchList.clear();
+    }
+
+    /**
+     * 获取搜素榜单
+     * @return
+     */
+    @Override
+    public List<String> getSearchTop() {
+        List<String> seachList = redisCache.getCacheList(Const.SEARCHKEY);
+        return seachList;
+    }
+
+    /**
+     * 删除热搜的key
+     */
+    @Override
+    public void delSearch() {
+        redisCache.deleteObject(Const.SEARCHKEY);
+    }
+
 }

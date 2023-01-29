@@ -66,5 +66,8 @@ public class VideoController {
     public ResponseResult getHistoryVideoList(@PathVariable Long[] ids){
         return videoService.getHistoryVideoList(ids);
     }
-
+    @GetMapping("video/search/{title}")
+    public ResponseResult searchVideoByTitle(@PathVariable String title){
+        return videoService.searchVideoByTitle(title);
+    }
 }

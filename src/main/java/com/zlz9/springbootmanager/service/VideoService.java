@@ -38,4 +38,8 @@ public interface VideoService extends IService<Video> {
     ResponseResult getVideoListByUserId(Long id);
 
     ResponseResult getHistoryVideoList(Long[] ids);
+
+    ResponseResult searchVideoByTitle(String title);
+
+    ResponseResult getSearchTop();
 }

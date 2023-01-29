@@ -10,9 +10,11 @@ import com.zlz9.springbootmanager.mapper.VideoMapper;
 import com.zlz9.springbootmanager.pojo.LoginUser;
 import com.zlz9.springbootmanager.pojo.Tag;
 import com.zlz9.springbootmanager.pojo.Video;
+import com.zlz9.springbootmanager.service.RedisService;
 import com.zlz9.springbootmanager.service.TagService;
 import com.zlz9.springbootmanager.service.UserService;
 import com.zlz9.springbootmanager.service.VideoService;
+import com.zlz9.springbootmanager.utils.RedisCache;
 import com.zlz9.springbootmanager.utils.ResponseResult;
 import com.zlz9.springbootmanager.vo.SwiperVo;
 import com.zlz9.springbootmanager.vo.VideoCategoryVo;
@@ -42,6 +44,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
     UserService userService;
     @Autowired
     TagService tagService;
+    @Autowired
+    RedisService redisService;
 
 
     /**
@@ -233,6 +237,35 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
         List<Video> videoList = videoMapper.selectBatchIds(Arrays.asList(ids));
         List<VideoVo> videoVoList = copyVideoList(videoList);
         return new ResponseResult(200, videoVoList);
+    }
+
+    /**
+     * 根据标题模糊查询视频
+     * @param title
+     * @return
+     */
+    @Override
+    public ResponseResult searchVideoByTitle(String title) {
+        LambdaQueryWrapper<Video> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(Video::getName, title);
+        List<Video> videoList = videoMapper.selectList(queryWrapper);
+        if (videoList.size()==0) {
+            return new ResponseResult(400, "未找到相关视频");
+        }
+//        找到之后将title存到redis中
+        redisService.setSearchTop(title);
+        List<VideoVo> videoVoList = copyVideoList(videoList);
+        return new ResponseResult<>(200,videoVoList);
+    }
+
+    /**
+     * 获取搜索榜单
+     * @return
+     */
+    @Override
+    public ResponseResult getSearchTop() {
+       List<String> searchList =  redisService.getSearchTop();
+        return new ResponseResult(200, searchList);
     }
 
     private List<VideoCategoryVo> copyVideoByTagList(List<Video> videoList) {
