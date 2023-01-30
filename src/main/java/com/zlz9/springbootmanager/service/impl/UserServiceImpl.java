@@ -1,5 +1,6 @@
 package com.zlz9.springbootmanager.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zlz9.springbootmanager.dto.LoginParams;
@@ -86,9 +87,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public AuthorVo selectAuthorById(Long authorId) {
         User user = userMapper.selectById(authorId);
-        AuthorVo authorVo = new AuthorVo();
-        BeanUtils.copyProperties(user, authorVo);
-        return authorVo;
+        if (ObjectUtil.isNotNull(user)) {
+            AuthorVo authorVo = new AuthorVo();
+            BeanUtils.copyProperties(user, authorVo);
+            return authorVo;
+        }else {
+            return null;
+        }
     }
 
     /**

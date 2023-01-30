@@ -3,7 +3,10 @@ package com.zlz9.springbootmanager.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zlz9.springbootmanager.dto.CommentParams;
 import com.zlz9.springbootmanager.dto.PageById;
+import com.zlz9.springbootmanager.pojo.LoginUser;
+import com.zlz9.springbootmanager.pojo.User;
 import com.zlz9.springbootmanager.pojo.Video;
 import com.zlz9.springbootmanager.pojo.VideoComment;
 import com.zlz9.springbootmanager.service.UserService;
@@ -14,6 +17,7 @@ import com.zlz9.springbootmanager.vo.AuthorVo;
 import com.zlz9.springbootmanager.vo.CommentVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -63,10 +67,43 @@ public class VideoCommentServiceImpl extends ServiceImpl<VideoCommentMapper, Vid
     public ResponseResult getCommentCountById(Long id) {
         VideoComment videoComment = videoCommentMapper.selectById(id);
         if (videoComment == null) {
-            return new ResponseResult(404, "未找到");
+            return new ResponseResult<>(200,0);
         }
         return new ResponseResult(200, videoComment.getLikeCount());
     }
+
+    /**
+     * 发布评论
+     * @param commentParams
+     * @return
+     */
+    @Override
+    public ResponseResult publishComment(CommentParams commentParams) {
+        /**
+         * 1.获取当前登录信息
+         */
+        LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = loginUser.getUser();
+        VideoComment videoComment = new VideoComment();
+        videoComment.setVideoId(commentParams.getVideoId());
+        videoComment.setContent(commentParams.getContent());
+        videoComment.setLikeCount(0);
+        videoComment.setParentId(commentParams.getParentId());
+        videoComment.setCreateTime(System.currentTimeMillis());
+        videoComment.setAuthorId(user.getId());
+        Long parent = commentParams.getParentId();
+        if (parent == null || parent==0) {
+            videoComment.setLevel(1);
+        }else {
+            videoComment.setLevel(2);
+        }
+        videoComment.setParentId(parent == null ? 0 : parent);
+        Long toUserId = commentParams.getToUserId();
+        videoComment.setToUid(toUserId == null ? 0 : toUserId );
+        this.videoCommentMapper.insert(videoComment);
+        return new ResponseResult<>(200,"评论成功  ");
+    }
+
 
     private List<CommentVo> copyList(List<VideoComment> records) {
        List<CommentVo> commentVoList = new ArrayList<>();
@@ -89,14 +126,15 @@ public class VideoCommentServiceImpl extends ServiceImpl<VideoCommentMapper, Vid
             if (CollectionUtils.isEmpty(commentVoList)) {
                 commentVo.setChildren(null);
             }
+            int size = commentVoList.size();
             commentVo.setChildren(commentVoList);
         }
 //        to user 给谁评论
-//        if (level > 1) {
-//            Long toUid = record.getToUid();
-//            AuthorVo toUser = this.userService.selectAuthorById(toUid);
-//            commentVo.setToUser(toUser);
-//        }
+        if (level > 1) {
+            Long toUid = record.getToUid();
+            AuthorVo toUser = this.userService.selectAuthorById(toUid);
+            commentVo.setToUser(toUser);
+        }
         return commentVo;
     }
 

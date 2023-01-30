@@ -1,15 +1,14 @@
 package com.zlz9.springbootmanager.controller;
 
+import com.zlz9.springbootmanager.dto.CommentParams;
 import com.zlz9.springbootmanager.dto.PageById;
 import com.zlz9.springbootmanager.dto.PageParams;
 import com.zlz9.springbootmanager.pojo.VideoComment;
 import com.zlz9.springbootmanager.service.VideoCommentService;
+import com.zlz9.springbootmanager.service.VideoService;
 import com.zlz9.springbootmanager.utils.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <h4>springboot-manager</h4>
@@ -30,5 +29,9 @@ public class CommentController {
     @GetMapping("/comment/count/{id}")
     public ResponseResult getCommentCountById(@PathVariable Long id){
         return videoCommentService.getCommentCountById(id);
+    }
+    @PostMapping("/publsh/comment")
+    public ResponseResult publishComment(@RequestBody CommentParams commentParams){
+        return videoCommentService.publishComment(commentParams);
     }
 }

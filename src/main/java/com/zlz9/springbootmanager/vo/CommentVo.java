@@ -22,5 +22,8 @@ public class CommentVo {
     private Long parentId;
     private String content;
     private Integer likeCount;
+//    是否展示回复框框
+    private boolean show=false;
+    private boolean status=false;
     private List<CommentVo> children;
 }
