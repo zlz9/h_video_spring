@@ -72,8 +72,12 @@ public class VideoController {
     public ResponseResult publishVideo(@RequestBody PublishVideoParams publishVideoParams){
         return videoService.publishVideo(publishVideoParams);
     }
-    @GetMapping("video/{id}")
-    public ResponseResult getVideoById(@PathVariable Long id){
+    @GetMapping("video/choose")
+    public ResponseResult getVideoById(Long id){
         return videoService.getVideoById(id);
+    }
+    @GetMapping("video/similar/{id}")
+    public  ResponseResult getVideoSimilarById(@PathVariable Long id){
+        return videoService.getVideoSimilarById(id);
     }
 }

@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -314,6 +315,9 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
     @Override
     public ResponseResult getVideoById(Long id) {
         Video video = videoMapper.selectById(id);
+        if (video == null) {
+            return new ResponseResult(404, "未找到");
+        }
         VideoVo videoVo = new VideoVo();
         video.setWeight(video.getWeight()+1);
         BeanUtils.copyProperties(video, videoVo);
@@ -322,6 +326,26 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
             return new ResponseResult<>(400,"未找到");
         }
         return new ResponseResult(200, videoVo);
+    }
+
+    /**
+     * 根据id查询相似视频
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult getVideoSimilarById(Long id) {
+        LambdaQueryWrapper<Video> queryWrapper = new LambdaQueryWrapper<>();
+        Video video = videoMapper.selectById(id);
+        if (video == null) {
+            return new ResponseResult(404, "未找到");
+        }
+        //根据videoId查找标签id
+       Long tagId= videoTagMapper.selectTagByVideoTd(id);
+        List<Long> ids= videoTagMapper.selectVideoListById(tagId);
+        List<Video> videoList = videoMapper.selectBatchIds(ids);
+        List<VideoVo> videoVoList = copyVideoList(videoList);
+        return new ResponseResult<>(200,videoVoList);
     }
 
     private List<VideoCategoryVo> copyVideoByTagList(List<Video> videoList) {

@@ -4,6 +4,8 @@ import com.zlz9.springbootmanager.pojo.VideoTag;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
 * @author 23340
 * @description 针对表【h_video_tag】的数据库操作Mapper
@@ -12,7 +14,9 @@ import org.apache.ibatis.annotations.Mapper;
 */
 @Mapper
 public interface VideoTagMapper extends BaseMapper<VideoTag> {
+    List<Long> selectVideoListById(Long tagId);
 
+    Long selectTagByVideoTd(Long id);
 }
 
 

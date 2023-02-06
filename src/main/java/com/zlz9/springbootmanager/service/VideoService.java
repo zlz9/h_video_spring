@@ -47,4 +47,6 @@ public interface VideoService extends IService<Video> {
     ResponseResult publishVideo(PublishVideoParams publishVideoParams);
 
     ResponseResult getVideoById(Long id);
+
+    ResponseResult getVideoSimilarById(Long id);
 }
