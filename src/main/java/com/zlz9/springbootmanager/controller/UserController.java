@@ -1,12 +1,10 @@
 package com.zlz9.springbootmanager.controller;
 
+import com.zlz9.springbootmanager.dto.UserDTO;
 import com.zlz9.springbootmanager.service.UserService;
 import com.zlz9.springbootmanager.utils.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <h4>springboot-manager</h4>
@@ -27,6 +25,10 @@ public class UserController {
     @GetMapping("userinfo/current")
     public ResponseResult getCurrentUser(){
         return userService.getCurrentUser();
+    }
+    @PostMapping("user/update")
+    public ResponseResult updateUserInfo(@RequestBody UserDTO userDTO){
+        return userService.updateUserInfo(userDTO);
     }
 
 }

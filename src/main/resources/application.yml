@@ -22,8 +22,8 @@ spring:
       name: root
   servlet:
     multipart:
-      max-file-size: 20MB
-      max-request-size: 20MB
+      max-file-size: 500MB
+      max-request-size: 500MB
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -48,6 +48,13 @@ mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
 
 
-
+# 阿里云oss配置
+aliyun:
+  oss:
+    endpoint: oss-cn-shanghai.aliyuncs.com
+    accessKeyId: LTAI5tRYcqdhbYmhS1FhjMGy
+    accessKeySecret: U9b75FNlGdWSw1Fc9GuuQrNXjAr93f
+    bucketname: h-video
+    urlPrefix:
 
 

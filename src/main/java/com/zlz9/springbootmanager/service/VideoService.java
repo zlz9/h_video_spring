@@ -1,6 +1,7 @@
 package com.zlz9.springbootmanager.service;
 
 import com.zlz9.springbootmanager.dto.PageParams;
+import com.zlz9.springbootmanager.dto.PublishVideoParams;
 import com.zlz9.springbootmanager.dto.VideoHistoryParams;
 import com.zlz9.springbootmanager.pojo.Video;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -42,4 +43,8 @@ public interface VideoService extends IService<Video> {
     ResponseResult searchVideoByTitle(String title);
 
     ResponseResult getSearchTop();
+
+    ResponseResult publishVideo(PublishVideoParams publishVideoParams);
+
+    ResponseResult getVideoById(Long id);
 }

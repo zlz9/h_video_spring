@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zlz9.springbootmanager.dto.LoginParams;
 import com.zlz9.springbootmanager.dto.RegisterParams;
+import com.zlz9.springbootmanager.dto.UserDTO;
 import com.zlz9.springbootmanager.lang.Const;
 import com.zlz9.springbootmanager.pojo.LoginUser;
 import com.zlz9.springbootmanager.pojo.User;
@@ -55,6 +56,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     UserMapper userMapper;
     @Autowired
     PasswordEncoder passwordEncoder;
+
 
     @Override
     public ResponseResult login(LoginParams loginParams) {
@@ -153,6 +155,31 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         AuthorVo authorVo = new AuthorVo();
         BeanUtils.copyProperties(user, authorVo);
         return new ResponseResult<>(200,authorVo);
+    }
+
+    /**
+     * 更新用户信息
+     * @param userDTO
+     * @return
+     */
+    @Override
+    public ResponseResult updateUserInfo(UserDTO userDTO) {
+        LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        User currentUser = userMapper.selectById(loginUser.getUser().getId());
+        boolean matches = passwordEncoder.matches(userDTO.getOldPwd(), currentUser.getPassword());
+        if (!matches) {
+            return new ResponseResult(500, "旧密码错误");
+        }else {
+            User user = new User();
+            user.setNickName(userDTO.getNickName());
+            user.setPassword(passwordEncoder.encode(userDTO.getNewPwd()));
+            user.setAvatar(userDTO.getAvatar());
+            user.setSelfIntroduction(userDTO.getSelfIntroduction());
+            user.setId(loginUser.getUser().getId());
+            userMapper.updateById(user);
+        }
+        return new ResponseResult<>(200,"更新成功");
     }
 
     private VideoVo copy(Video video) {

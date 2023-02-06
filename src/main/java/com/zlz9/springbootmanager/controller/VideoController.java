@@ -1,15 +1,13 @@
 package com.zlz9.springbootmanager.controller;
 
 import com.zlz9.springbootmanager.dto.PageParams;
+import com.zlz9.springbootmanager.dto.PublishVideoParams;
 import com.zlz9.springbootmanager.dto.VideoHistoryParams;
 import com.zlz9.springbootmanager.service.VideoService;
 import com.zlz9.springbootmanager.utils.ResponseResult;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.security.PublicKey;
@@ -69,5 +67,13 @@ public class VideoController {
     @GetMapping("video/search/{title}")
     public ResponseResult searchVideoByTitle(@PathVariable String title){
         return videoService.searchVideoByTitle(title);
+    }
+    @PostMapping("publish/video")
+    public ResponseResult publishVideo(@RequestBody PublishVideoParams publishVideoParams){
+        return videoService.publishVideo(publishVideoParams);
+    }
+    @GetMapping("video/{id}")
+    public ResponseResult getVideoById(@PathVariable Long id){
+        return videoService.getVideoById(id);
     }
 }

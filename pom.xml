@@ -163,8 +163,24 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- aliyun-oos -->
+<!--        <dependency>-->
+<!--            <groupId>com.aliyun.oss</groupId>-->
+<!--            <artifactId>aliyun-sdk-oss</artifactId>-->
+<!--            <version>2.8.3</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.15.1</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+<!--        截取视频库-->
     </dependencies>
-
     <build>
         <plugins>
             <plugin>

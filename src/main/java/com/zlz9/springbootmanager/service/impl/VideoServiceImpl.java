@@ -5,15 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zlz9.springbootmanager.dto.PageParams;
+import com.zlz9.springbootmanager.dto.PublishVideoParams;
 import com.zlz9.springbootmanager.dto.VideoHistoryParams;
+import com.zlz9.springbootmanager.mapper.UserMapper;
 import com.zlz9.springbootmanager.mapper.VideoMapper;
+import com.zlz9.springbootmanager.mapper.VideoTagMapper;
 import com.zlz9.springbootmanager.pojo.LoginUser;
 import com.zlz9.springbootmanager.pojo.Tag;
 import com.zlz9.springbootmanager.pojo.Video;
-import com.zlz9.springbootmanager.service.RedisService;
-import com.zlz9.springbootmanager.service.TagService;
-import com.zlz9.springbootmanager.service.UserService;
-import com.zlz9.springbootmanager.service.VideoService;
+import com.zlz9.springbootmanager.pojo.VideoTag;
+import com.zlz9.springbootmanager.service.*;
 import com.zlz9.springbootmanager.utils.RedisCache;
 import com.zlz9.springbootmanager.utils.ResponseResult;
 import com.zlz9.springbootmanager.vo.SwiperVo;
@@ -21,8 +22,10 @@ import com.zlz9.springbootmanager.vo.VideoCategoryVo;
 import com.zlz9.springbootmanager.vo.VideoVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ import java.util.Objects;
  * @description 针对表【h_video】的数据库操作Service实现
  * @createDate 2023-01-01 14:20:42
  */
+@Transactional
 @Service
 public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
         implements VideoService {
@@ -46,6 +50,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
     TagService tagService;
     @Autowired
     RedisService redisService;
+    @Autowired
+    VideoTagMapper videoTagMapper;
 
 
     /**
@@ -266,6 +272,56 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
     public ResponseResult getSearchTop() {
        List<String> searchList =  redisService.getSearchTop();
         return new ResponseResult(200, searchList);
+    }
+
+    /**
+     * 发不视频
+     * @param publishVideoParams
+     * @return
+     */
+    @Override
+    public ResponseResult publishVideo(PublishVideoParams publishVideoParams) {
+        LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long id = loginUser.getUser().getId();
+        Video video = new Video();
+        video.setCover(publishVideoParams.getUrl()+"?x-oss-process=video/snapshot,t_1000,m_fast");
+        video.setAuthorId(id);
+        video.setCreateTime(System.currentTimeMillis());
+        video.setIsTop(publishVideoParams.getIsTop());
+        video.setSelfIntroduction(publishVideoParams.getSelfIntroduction());
+        video.setName(publishVideoParams.getName());
+        video.setUrl(publishVideoParams.getUrl());
+        video.setWeight(0);
+        videoMapper.insert(video);
+//        插入后获取视频id，然后做分类
+
+
+        for (Long tagId : publishVideoParams.getTagIds()) {
+            VideoTag videoTag = new VideoTag();
+            videoTag.setTagId(tagId);
+            videoTag.setVideoId(video.getId());
+            videoTagMapper.insert(videoTag);
+        }
+
+        return new ResponseResult<>(200,"发布成功");
+    }
+
+    /**
+     * 根据id查询视频
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult getVideoById(Long id) {
+        Video video = videoMapper.selectById(id);
+        VideoVo videoVo = new VideoVo();
+        video.setWeight(video.getWeight()+1);
+        BeanUtils.copyProperties(video, videoVo);
+        videoVo.setAuthor(userService.selectAuthorById(video.getAuthorId()));
+        if (video== null) {
+            return new ResponseResult<>(400,"未找到");
+        }
+        return new ResponseResult(200, videoVo);
     }
 
     private List<VideoCategoryVo> copyVideoByTagList(List<Video> videoList) {
