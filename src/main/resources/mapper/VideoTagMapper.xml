@@ -16,6 +16,6 @@
         SELECT video_id from h_video_tag WHERE tag_id = #{tagId}
     </select>
     <select id="selectTagByVideoTd" resultType="java.lang.Long">
-        SELECT DISTINCT tag_id from h_video_tag WHERE video_id =#{id}
+        SELECT DISTINCT tag_id from h_video_tag WHERE video_id =#{id} LIMIT 1
     </select>
 </mapper>
