@@ -3,6 +3,7 @@ package com.zlz9.springbootmanager.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zlz9.springbootmanager.controller.UploadController;
 import com.zlz9.springbootmanager.dto.LoginParams;
 import com.zlz9.springbootmanager.dto.RegisterParams;
 import com.zlz9.springbootmanager.dto.UserDTO;
@@ -10,6 +11,7 @@ import com.zlz9.springbootmanager.lang.Const;
 import com.zlz9.springbootmanager.pojo.LoginUser;
 import com.zlz9.springbootmanager.pojo.User;
 import com.zlz9.springbootmanager.pojo.Video;
+import com.zlz9.springbootmanager.service.FileUploadService;
 import com.zlz9.springbootmanager.service.UserService;
 import com.zlz9.springbootmanager.mapper.UserMapper;
 import com.zlz9.springbootmanager.service.VideoService;
@@ -56,6 +58,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     UserMapper userMapper;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    FileUploadService fileUploadService;
 
 
     @Override
@@ -171,6 +175,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (!matches) {
             return new ResponseResult(500, "旧密码错误");
         }else {
+            //            删除远程资源
+           fileUploadService.delete(currentUser.getAvatar());
             User user = new User();
             user.setNickName(userDTO.getNickName());
             user.setPassword(passwordEncoder.encode(userDTO.getNewPwd()));

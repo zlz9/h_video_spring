@@ -4,6 +4,7 @@ import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zlz9.springbootmanager.controller.UploadController;
 import com.zlz9.springbootmanager.dto.PageParams;
 import com.zlz9.springbootmanager.dto.PublishVideoParams;
 import com.zlz9.springbootmanager.dto.VideoHistoryParams;
@@ -53,6 +54,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
     RedisService redisService;
     @Autowired
     VideoTagMapper videoTagMapper;
+    @Autowired FileUploadService fileUploadService;
 
 
     /**
@@ -218,6 +220,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
         if (!Objects.equals(userId, video.getAuthorId())) {
             return new ResponseResult<>(505,"权限不够");
         }
+        // 删除oss对象上的资源
+        fileUploadService.delete(video.getUrl());
         videoMapper.deleteById(id);
         return new ResponseResult<>(200,"操作成功");
     }
