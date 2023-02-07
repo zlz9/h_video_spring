@@ -55,7 +55,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/user/*",
             "/api/video/user/*",
             "/ws/**",
-            "/websocket/*"
+            "/websocket/*",
+            "/api/comment/count/*",
+            "/api/video/similar/*",
+            "/api/comment"
     };
 
     @Override
