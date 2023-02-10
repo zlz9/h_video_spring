@@ -2,22 +2,28 @@ package com.zlz9.springbootmanager.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zlz9.springbootmanager.pojo.Chat;
 import com.zlz9.springbootmanager.pojo.Friend;
 import com.zlz9.springbootmanager.pojo.LoginUser;
 import com.zlz9.springbootmanager.service.ChatService;
 import com.zlz9.springbootmanager.service.FriendService;
 import com.zlz9.springbootmanager.mapper.FriendMapper;
+import com.zlz9.springbootmanager.service.RedisService;
 import com.zlz9.springbootmanager.service.UserService;
 import com.zlz9.springbootmanager.utils.ResponseResult;
+import com.zlz9.springbootmanager.vo.ChatVo;
 import com.zlz9.springbootmanager.vo.FriendVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author 23340
@@ -34,6 +40,8 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend>
    UserService userService;
    @Autowired
     ChatService chatService;
+   @Autowired
+    RedisService redisService;
     @Override
     public ResponseResult makeFriend(Long friendId) {
         /**
@@ -93,15 +101,16 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend>
 
     /**
      * 获取朋友列表和最新的一条消息
+     * 在redis里面找
      * @return
      */
     @Override
     public ResponseResult getFriendListAndLastMsg() {
         LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<FriendVo> friendVoList = new ArrayList<>();
         LambdaQueryWrapper<Friend> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.ne(Friend::getFriendId,loginUser.getUser().getId());
         List<Friend> friends = friendMapper.selectList(queryWrapper);
-        List<FriendVo> friendVoList = new ArrayList<>();
         for (Friend friend : friends) {
             FriendVo friendVo = new FriendVo();
             friendVo.setFriend(userService.selectAuthorById(friend.getFriendId()));

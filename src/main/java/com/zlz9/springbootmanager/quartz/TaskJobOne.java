@@ -2,6 +2,7 @@ package com.zlz9.springbootmanager.quartz;
 
 import com.zlz9.springbootmanager.service.DBService;
 import com.zlz9.springbootmanager.service.RedisService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import static java.lang.Thread.sleep;
  * 持久化聊天信息
  **/
 @Component
+@Slf4j
 @EnableScheduling
 public class TaskJobOne {
     @Autowired
@@ -27,9 +29,9 @@ public class TaskJobOne {
     @Autowired
     RedisService redisService;
     public  void testJobOneMethod() throws InterruptedException {
-        System.out.println("1  定时任务1正在执行......"+new Date());
+        log.info("1 聊天列表持久化 定时任务1正在执行......"+new Date());
         dbService.transChatFromRedis2DB();
-        System.out.println("1  定时任务1业务代码执行完毕......"+new Date());
+        log.info("1 聊天列表持久化 定时任务1业务代码执行完毕......"+new Date());
     }
 
 }

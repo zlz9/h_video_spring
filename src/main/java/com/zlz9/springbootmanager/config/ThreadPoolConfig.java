@@ -29,7 +29,7 @@ public class ThreadPoolConfig {
 //        设置最大线程数
         executor.setMaxPoolSize(20);
 //        设置默认线程名称
-        executor.setThreadNamePrefix("博客平台");
+        executor.setThreadNamePrefix("热门短视频推荐平台");
 //        配置队列大小
         executor.setQueueCapacity(Integer.MAX_VALUE);
 //        等待所有线程结束在关闭线程

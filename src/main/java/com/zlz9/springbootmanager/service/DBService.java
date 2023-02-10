@@ -51,7 +51,7 @@ public interface DBService {
      */
     void transLikedCountFromRedis2DB();
 /**
- * 将redis的评论存入数据库中
+ * 将聊天
  */
     void transChatFromRedis2DB();
 }
