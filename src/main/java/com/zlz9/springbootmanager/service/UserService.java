@@ -28,4 +28,13 @@ public interface UserService extends IService<User> {
     ResponseResult getCurrentUser();
 
     ResponseResult updateUserInfo(UserDTO userDTO);
+
+    ResponseResult getAllUser();
+
+
+    ResponseResult disableById(Long id);
+
+    ResponseResult enableUserById(Long id);
+
+    ResponseResult resetPassword(Long id);
 }

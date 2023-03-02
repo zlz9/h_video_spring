@@ -25,4 +25,7 @@
         WHERE
             hv.id IN ( SELECT video_id FROM h_video_tag hvt WHERE hvt.tag_id = #{id} )
     </select>
+    <select id="getTagsByVideoId" resultType="com.zlz9.springbootmanager.vo.TagVo">
+        SELECT id,tag_name,icon FROM h_tag WHERE h_tag.id IN (SELECT h_video_tag.tag_id FROM h_video_tag WHERE video_id=#{id})
+    </select>
 </mapper>

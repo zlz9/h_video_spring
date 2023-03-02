@@ -37,6 +37,15 @@ public class WebSocketServer {
     //    用户唯一标识
     private String id;
     private static CopyOnWriteArraySet<WebSocketServer> webSocketSet = new CopyOnWriteArraySet<>();
+
+    public static ConcurrentHashMap<String, WebSocketServer> getWebSocketMap() {
+        return webSocketMap;
+    }
+
+    public static void setWebSocketMap(ConcurrentHashMap<String, WebSocketServer> webSocketMap) {
+        WebSocketServer.webSocketMap = webSocketMap;
+    }
+
     /**
      * concurrent包的线程安全set，用来存放每个客户端对应的MyWebSocket对象
      */

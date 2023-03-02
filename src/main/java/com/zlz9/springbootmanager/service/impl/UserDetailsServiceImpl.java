@@ -40,7 +40,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         queryWrapper.eq(User::getUserName, username);
         User user = userMapper.selectOne(queryWrapper);
         if (Objects.isNull(user)) {
-            throw new RuntimeException("为查找到用户");
+            throw new RuntimeException("未查找到用户");
         }
 //TODO 根据用户查询权限信息 添加到LoginUser中
         //封装成UserDetails对象返回

@@ -2,6 +2,8 @@ package com.zlz9.springbootmanager.vo;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * <h4>springboot-manager</h4>
  * <p>视频vo</p>
@@ -54,4 +56,8 @@ public class VideoVo {
      * 是否顶置
      */
     private Boolean isTop;
+    /**
+     * 标签
+     */
+    private List<TagVo> tags;
 }

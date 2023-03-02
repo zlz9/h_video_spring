@@ -2,12 +2,14 @@ package com.zlz9.springbootmanager.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zlz9.springbootmanager.controller.UploadController;
 import com.zlz9.springbootmanager.dto.LoginParams;
 import com.zlz9.springbootmanager.dto.RegisterParams;
 import com.zlz9.springbootmanager.dto.UserDTO;
 import com.zlz9.springbootmanager.lang.Const;
+import com.zlz9.springbootmanager.mapper.VideoMapper;
 import com.zlz9.springbootmanager.pojo.LoginUser;
 import com.zlz9.springbootmanager.pojo.User;
 import com.zlz9.springbootmanager.pojo.Video;
@@ -21,7 +23,9 @@ import com.zlz9.springbootmanager.utils.ResponseResult;
 import com.zlz9.springbootmanager.utils.UserNameUtils;
 import com.zlz9.springbootmanager.vo.AuthorVideoVo;
 import com.zlz9.springbootmanager.vo.AuthorVo;
+import com.zlz9.springbootmanager.vo.UserInfoVo;
 import com.zlz9.springbootmanager.vo.VideoVo;
+import com.zlz9.springbootmanager.ws.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +43,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 
 /**
  * @author 23340
@@ -186,6 +193,65 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             userMapper.updateById(user);
         }
         return new ResponseResult<>(200,"更新成功");
+    }
+
+    /**
+     * 获取全部的user信息
+     * @return
+     */
+    @Override
+    public ResponseResult getAllUser() {
+        List<User> users = userMapper.selectList(null);
+        List<UserInfoVo> userInfoVoList = copyUserList(users);
+        return new ResponseResult(200, userInfoVoList);
+    }
+
+    private List<UserInfoVo> copyUserList(List<User> users) {
+        List<UserInfoVo> userInfoVoList = new ArrayList<>();
+        for (User user : users) {
+            userInfoVoList.add(copyUser(user));
+        }
+        return userInfoVoList;
+    }
+
+    private UserInfoVo copyUser(User user) {
+        UserInfoVo userInfoVo = new UserInfoVo();
+        BeanUtils.copyProperties(user, userInfoVo);
+        return userInfoVo;
+    }
+
+    /**
+     * 禁用用户
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult disableById(Long id) {
+        User user = userMapper.selectById(id);
+        user.setStatus(false);
+        userMapper.updateById(user);
+        return new ResponseResult<>(200,"禁用用户成功");
+    }
+
+    @Override
+    public ResponseResult enableUserById(Long id) {
+        User user = userMapper.selectById(id);
+        user.setStatus(true);
+        userMapper.updateById(user);
+        return new ResponseResult<>(200,"解禁成功");
+    }
+
+    /**
+     * 根据用户id重置密码
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult resetPassword(Long id) {
+        String encode = passwordEncoder.encode(Const.rawPasswod);
+        User user = userMapper.selectById(id);
+        user.setPassword(encode);
+        return new ResponseResult<>(200,"重置后密码为："+Const.rawPasswod+",请及时修改密码");
     }
 
     private VideoVo copy(Video video) {

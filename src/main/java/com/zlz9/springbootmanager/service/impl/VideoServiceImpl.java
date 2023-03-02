@@ -4,6 +4,7 @@ import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zlz9.springbootmanager.config.AliYunConfig;
 import com.zlz9.springbootmanager.controller.UploadController;
 import com.zlz9.springbootmanager.dto.PageParams;
 import com.zlz9.springbootmanager.dto.PublishVideoParams;
@@ -30,10 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author 23340
@@ -54,6 +52,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
     RedisService redisService;
     @Autowired
     VideoTagMapper videoTagMapper;
+    @Autowired
+    VideoTagService videoTagService;
     @Autowired FileUploadService fileUploadService;
 
 
@@ -333,10 +333,26 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
     }
 
     /**
+     * 根据id删除
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult delVideo(Long id) {
+        Video video = videoMapper.selectById(id);
+        videoMapper.deleteById(id);
+//        远程oss删除
+        UploadController uploadController = new UploadController();
+        uploadController.deleteFile(video.getUrl());
+        return new ResponseResult<>(200,"删除成功");
+    }
+
+    /**
      * 根据id查询相似视频
      * @param id
      * @return
      */
+
     @Override
     public ResponseResult getVideoSimilarById(Long id) {
         LambdaQueryWrapper<Video> queryWrapper = new LambdaQueryWrapper<>();
@@ -351,6 +367,19 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
         List<VideoVo> videoVoList = copyVideoList(videoList);
         return new ResponseResult<>(200,videoVoList);
     }
+
+    @Override
+    public ResponseResult getAllVideo(PageParams pageParams) {
+        Page<Video> page = new Page<>(pageParams.getPage(), pageParams.getPageSize());
+        LambdaQueryWrapper<Video> queryWrapper = new LambdaQueryWrapper<>();
+        Page<Video> videoPage = videoMapper.selectPage(page, null);
+        List<Video> records = videoPage.getRecords();
+        HashMap<String, Object> map = new HashMap<>();
+        List<VideoVo> videoVoList = copyVideoList(records);
+        map.put("videoList",videoVoList);
+        return new ResponseResult<>(200,map);
+    }
+
 
     private List<VideoCategoryVo> copyVideoByTagList(List<Video> videoList) {
         List<VideoCategoryVo> videoByTagVos = new ArrayList<>();
@@ -394,6 +423,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
         VideoVo videoVo = new VideoVo();
         BeanUtils.copyProperties(video, videoVo);
         videoVo.setAuthor(userService.selectAuthorById(video.getAuthorId()));
+        videoVo.setTags(tagService.getTagsById(video.getId()));
         return videoVo;
     }
 }

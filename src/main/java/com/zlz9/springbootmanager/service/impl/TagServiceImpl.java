@@ -2,15 +2,20 @@ package com.zlz9.springbootmanager.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zlz9.springbootmanager.dto.TagDTO;
+import com.zlz9.springbootmanager.pojo.LoginUser;
 import com.zlz9.springbootmanager.pojo.Tag;
 import com.zlz9.springbootmanager.pojo.Video;
 import com.zlz9.springbootmanager.service.TagService;
 import com.zlz9.springbootmanager.mapper.TagMapper;
 import com.zlz9.springbootmanager.service.UserService;
+import com.zlz9.springbootmanager.service.VideoTagService;
 import com.zlz9.springbootmanager.utils.ResponseResult;
+import com.zlz9.springbootmanager.vo.TagVo;
 import com.zlz9.springbootmanager.vo.VideoVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -29,6 +34,8 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
      TagMapper tagMapper;
      @Autowired
      UserService userService;
+     @Autowired
+    VideoTagService videoTagService;
 
     /**
      * 获取视频标签
@@ -68,6 +75,46 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
         Tag tag = tagMapper.selectById(tagId);
         return tag;
     }
+
+    /**
+     * 上传id
+     * @param tagDTO
+     * @return
+     */
+    @Override
+    public ResponseResult uploadTag(TagDTO tagDTO) {
+        Tag tag = new Tag();
+        LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        tag.setTagName(tagDTO.getTagName());
+        tag.setCreateTime(System.currentTimeMillis());
+        tag.setAuthorId(loginUser.getUser().getId());
+        tag.setCreateTime(System.currentTimeMillis());
+        tag.setIcon(tagDTO.getIcon());
+        tagMapper.insert(tag);
+        return new ResponseResult(200, "插入成功");
+    }
+    /**
+     * 根据id删除tag
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult delTagById(Long id) {
+        tagMapper.deleteById(id);
+        return new ResponseResult<>(200,"删除成功");
+    }
+
+    /**
+     * 根据id查询标签列表
+     * @param id
+     * @return
+     */
+    @Override
+    public List<TagVo> getTagsById(Long id) {
+        List<TagVo> tagVoList = tagMapper.getTagsByVideoId(id);
+        return tagVoList;
+    }
+
 
     private List<VideoVo> copyList(List<Video> videoList) {
         List<VideoVo> videoVoList = new ArrayList<>();
